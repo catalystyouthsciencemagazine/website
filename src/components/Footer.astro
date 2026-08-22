@@ -1,0 +1,41 @@
+---
+import Section from "./Section.astro";
+import LinkButton from "./LinkButton.astro";
+---
+
+<footer>
+	<Section
+		containerClass="bg-linear-30 from-indigo-darker to-indigo-darkest px-12 py-18 text-indigo-fg items-center justify-center gap-8 rounded-3xl text-center"
+	>
+		<h2 class="typography-header pb-0! text-5xl!">Become a contributor.</h2>
+		<p class="text-indigo-fg/60">
+			Whether you write, design, edit, or code,<br />
+			there’s a place for you at Catalyst.
+		</p>
+		<nav class="flex gap-2">
+			<LinkButton style="inverted-primary">Submit Article</LinkButton>
+			<LinkButton style="inverted-primary">Contact Us</LinkButton>
+			<LinkButton style="inverted-primary">Join Our Team</LinkButton>
+		</nav>
+	</Section>
+
+	<div class="pb-12 w-full flex items-center justify-center">
+		<p class="opacity-20 inline-flex gap-1">
+			Website implemented by
+			<a href="https://instagram.com/rniraclebrooke" class="underline">
+				Brooke Nguyen
+			</a>
+			aka.
+			<a href="https://github.com/rniraclefire" class="underline">
+				rniraclefire
+			</a>
+			― View the
+			<a
+				href="https://github.com/rniraclefire/catalyst-youth-magazine"
+				class="underline"
+			>
+				source code
+			</a>
+		</p>
+	</div>
+</footer>

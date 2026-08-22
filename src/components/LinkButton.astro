@@ -10,11 +10,11 @@ const { href, style } = Astro.props;
 <a
 	{href}
 	class:list={[
-		"shadow-accent-bg/20 shadow-sm px-5 py-3 rounded-full transition-all hover:scale-[101%] font-medium ",
+		"shadow-indigo/20 shadow-sm px-5 py-3 rounded-full transition-all hover:scale-[101%] font-medium ",
 		style == "primary"
-			? "bg-accent-bg hover:bg-accent-bg-hover text-accent-fg"
+			? "bg-indigo hover:bg-indigo-dark text-indigo-fg"
 			: style == "inverted-primary"
-				? "bg-accent-fg text-accent-bg "
+				? "bg-indigo-fg text-indigo "
 				: "",
 	]}
 >

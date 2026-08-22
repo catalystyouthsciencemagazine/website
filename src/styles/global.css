@@ -8,15 +8,19 @@
 	--font-sans: "Lexend Variable", sans-serif;
 	--font-serif: "Fraunces Variable", serif;
 
-	--color-bg: #ffffff;
-	--color-bg-dark: #f1f4f9;
-	--color-bg-darker: #e3e8f0;
-	--color-bg-border: #e3e8f0;
-	--color-prose: #5c6b85;
+	--color-neutral: #ffffff;
+	--color-neutral-dark: #f4f6f9;
+	--color-neutral-darker: #e6e9f0;
+	--color-prose: #5c5b85;
 
-	--color-accent-bg: #2952e3;
-	--color-accent-bg-hover: #193dc0;
-	--color-accent-fg: #ffffff;
+	--color-indigo: #3333cc;
+	--color-indigo-dark: #0909aa;
+	--color-indigo-darker: #010080;
+	--color-indigo-darkest: #05052e;
+	--color-indigo-fg: #ffffff;
+
+	--color-gold: #fec808;
+	--color-gold-fg: #ffffff;
 
 	--color-segment-light: #163a73;
 	--color-segment-dark: #081526;
@@ -30,6 +34,6 @@
 
 @layer utilities {
 	.typography-header {
-		@apply text-4xl font-serif font-semibold pb-6;
+		@apply text-4xl font-serif font-semibold pb-6 leading-10;
 	}
 }

@@ -11,10 +11,10 @@ const { icon, header, headerTag: HeaderTag = "h3" } = Astro.props;
 ---
 
 <div
-	class="bg-bg p-8 pb-5.5 rounded-2xl border border-bg-border shadow-lg shadow-bg-border/60"
+	class="bg-neutral p-8 pb-5.5 rounded-2xl border border-neutral-darker shadow-lg shadow-neutral-darker/60"
 >
-	<div class="bg-accent-bg/30 inline-block rounded-lg mb-2">
-		<Icon name={icon} class="text-accent-bg m-2 text-2xl" />
+	<div class="bg-indigo/30 inline-block rounded-lg mb-2">
+		<Icon name={icon} class="text-indigo m-2 text-2xl" />
 	</div>
 	<HeaderTag>
 		<span class="font-semibold font-serif text-2xl">{header}</span>
