@@ -1,17 +1,73 @@
 ---
-
+import Layout from "@/components/Layout.astro";
+import IconCard from "@/components/IconCard.astro";
+import Section from "@/components/Section.astro";
+import Eyebrow from "@/components/Eyebrow.astro";
+import Pill from "@/components/Pill.astro";
+import CaptionedHeader from "@/components/CaptionedHeader.astro";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout>
+	<Section
+		sectionClass="bg-radial from-segment-dark to-segment-light text-accent-fg"
+		containerClass="items-center justify-center text-center"
+	>
+		<div class="flex gap-2">
+			<Pill>International</Pill>
+			<Pill>Youth-Led</Pill>
+			<Pill>Peer-Reviewed</Pill>
+		</div>
+		<h1 class="font-serif font-bold text-9xl mb-4">
+			Cata<i class="font-semibold">lyst</i>
+		</h1>
+		<p class="text-accent-fg/50">
+			A global magazine for youth science journalism.<br />
+			Made by and for students abroad.
+		</p>
+	</Section>
+
+	<Section sectionClass="bg-bg-dark">
+		<Eyebrow>Why Catalyst</Eyebrow>
+		<CaptionedHeader>
+			<span slot="header">
+				Science communication,<br />
+				written by people<br />
+				who'll shape it's future
+			</span>
+			<span slot="body">
+				Catalyst exists to make rigorous scientific writing accessible
+				to students everywhere, and to prove that "student publication"
+				doesn’t mean amateur.
+			</span>
+		</CaptionedHeader>
+		<div class="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+			<IconCard icon="ph:dna" header="Research">
+				We publish original research from student scientists, reviewed
+				with the same rigor as any academic journal.
+			</IconCard>
+			<IconCard icon="ph:chat-centered" header="Journalism">
+				Our reporters cover breaking discoveries and translate dense
+				papers into stories anyone can follow.
+			</IconCard>
+			<IconCard icon="ph:graduation-cap" header="Education">
+				Long-form explainers that make complex science click, without
+				dumbing it down for a younger audience.
+			</IconCard>
+			<IconCard icon="ph:globe" header="Global Community">
+				Editors and writers across 10+ countries collaborate across time
+				zones, languages, and disciplines.
+			</IconCard>
+		</div>
+	</Section>
+
+	<Section sectionClass="bg-bg-darker">
+		<Eyebrow>Latest Issue</Eyebrow>
+		<CaptionedHeader>
+			<span slot="header"> Featured Articles </span>
+			<span slot="body">
+				Selected from this month’s issue: research, reporting, and
+				analysis from our global contributor network.
+			</span>
+		</CaptionedHeader>
+	</Section>
+</Layout>

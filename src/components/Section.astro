@@ -1,0 +1,14 @@
+---
+const { sectionClass, containerClass } = Astro.props;
+---
+
+<section class:list={["w-full py-20 pb-18 px-content-padding", sectionClass]}>
+	<div
+		class:list={[
+			"max-w-content w-full mx-auto flex flex-col gap-2",
+			containerClass,
+		]}
+	>
+		<slot />
+	</div>
+</section>

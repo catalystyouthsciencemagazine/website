@@ -1,0 +1,39 @@
+---
+import "@fontsource/ibm-plex-mono";
+import "@fontsource-variable/fraunces/wght.css";
+import "@fontsource-variable/lexend/wght.css";
+import "../styles/global.css";
+
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import { ClientRouter } from "astro:transitions";
+
+const { pageTitle } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="generator" content={Astro.generator} />
+		<meta name="theme-color" content="#FFEEEE" />
+		<title>
+			{
+				pageTitle
+					? `${pageTitle} ― Catalyst Youth Science Magazine`
+					: "Catalyst Youth Science Magazine"
+			}
+		</title>
+		<ClientRouter />
+	</head>
+	<body class="m-0 w-full h-full overflow-x-hidden font-light">
+		<Header />
+		<main>
+			<slot />
+		</main>
+		<Footer />
+	</body>
+</html>

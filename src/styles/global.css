@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+@theme {
+	--spacing-content: 72rem;
+	--spacing-content-padding: 2rem;
+
+	--font-mono: "IBM Plex Mono", monospace;
+	--font-sans: "Lexend Variable", sans-serif;
+	--font-serif: "Fraunces Variable", serif;
+
+	--color-bg: #ffffff;
+	--color-bg-dark: #f1f4f9;
+	--color-bg-darker: #e3e8f0;
+	--color-bg-border: #e3e8f0;
+	--color-prose: #5c6b85;
+
+	--color-accent-bg: #2952e3;
+	--color-accent-bg-hover: #193dc0;
+	--color-accent-fg: #ffffff;
+
+	--color-segment-light: #163a73;
+	--color-segment-dark: #081526;
+}
+
+@layer theme {
+	p {
+		@apply text-prose;
+	}
+}
+
+@layer utilities {
+	.typography-header {
+		@apply text-4xl font-serif font-semibold pb-6;
+	}
+}
