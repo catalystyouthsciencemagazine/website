@@ -8,7 +8,7 @@ import icon from "astro-icon";
 // https://astro.build/config
 export default defineConfig({
 	site: "https://rniraclefire.github.io",
-	base: "/catalyst-youth-magazine",
+	base: "/catalystyouth.org",
 
 	vite: {
 		plugins: [tailwindcss()],
