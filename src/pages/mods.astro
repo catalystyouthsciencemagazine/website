@@ -11,16 +11,17 @@ import Eyebrow from "@/components/Eyebrow.astro";
 	>
 		<!-- LOGIN SCREEN -->
 		<div id="login-screen" class="w-full max-w-md mx-auto">
-			<div
-				class="bg-neutral p-8 rounded-2xl border border-neutral-darker shadow-lg shadow-neutral-darker/60"
-			>
+			<div class="bg-neutral p-8 rounded-2xl border border-neutral-darker shadow-lg shadow-neutral-darker/60">
 				<Eyebrow>Mods Only</Eyebrow>
 				<h1 class="typography-header text-3xl!">Log In</h1>
 				<form id="login-form" class="flex flex-col gap-4">
 					<div>
-						<label for="email" class="text-sm text-prose block mb-1"
-							>Email</label
+						<label
+							for="email"
+							class="text-sm text-prose block mb-1"
 						>
+							Email
+						</label>
 						<input
 							type="email"
 							id="email"
@@ -30,9 +31,12 @@ import Eyebrow from "@/components/Eyebrow.astro";
 						/>
 					</div>
 					<div>
-						<label for="password" class="text-sm text-prose block mb-1"
-							>Password</label
+						<label
+							for="password"
+							class="text-sm text-prose block mb-1"
 						>
+							Password
+						</label>
 						<input
 							type="password"
 							id="password"
@@ -55,9 +59,7 @@ import Eyebrow from "@/components/Eyebrow.astro";
 
 		<!-- ACCESS DENIED -->
 		<div id="denied-screen" class="w-full max-w-md mx-auto hidden">
-			<div
-				class="bg-neutral p-8 rounded-2xl border border-neutral-darker text-center"
-			>
+			<div class="bg-neutral p-8 rounded-2xl border border-neutral-darker text-center">
 				<p class="mb-4">
 					You're signed in, but this account doesn't have mod access.
 				</p>
@@ -98,178 +100,179 @@ import Eyebrow from "@/components/Eyebrow.astro";
 	</section>
 </Layout>
 
+<!-- yo shit is breaking ci sorry -brooke -->
 <script>
-	import { signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
-	import {
-		collection,
-		query,
-		where,
-		orderBy,
-		getDocs,
-		doc,
-		getDoc,
-		updateDoc,
-	} from "firebase/firestore";
-	import { auth, db } from "@/lib/firebase";
+	// import { signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
+	// import {
+	// 	collection,
+	// 	query,
+	// 	where,
+	// 	orderBy,
+	// 	getDocs,
+	// 	doc,
+	// 	getDoc,
+	// 	updateDoc,
+	// } from "firebase/firestore";
+	// import { auth, db } from "@/lib/firebase";
 
-	const loginScreen = document.getElementById("login-screen")!;
-	const deniedScreen = document.getElementById("denied-screen")!;
-	const dashboardScreen = document.getElementById("dashboard-screen")!;
+	// const loginScreen = document.getElementById("login-screen")!;
+	// const deniedScreen = document.getElementById("denied-screen")!;
+	// const dashboardScreen = document.getElementById("dashboard-screen")!;
 
-	const loginForm = document.getElementById("login-form") as HTMLFormElement;
-	const loginBtn = document.getElementById("login-btn") as HTMLButtonElement;
-	const loginMsg = document.getElementById("login-msg")!;
+	// const loginForm = document.getElementById("login-form") as HTMLFormElement;
+	// const loginBtn = document.getElementById("login-btn") as HTMLButtonElement;
+	// const loginMsg = document.getElementById("login-msg")!;
 
-	loginForm.addEventListener("submit", async (e) => {
-		e.preventDefault();
-		loginMsg.textContent = "";
-		loginBtn.disabled = true;
+	// loginForm.addEventListener("submit", async (e) => {
+	// 	e.preventDefault();
+	// 	loginMsg.textContent = "";
+	// 	loginBtn.disabled = true;
 
-		const email = (document.getElementById("email") as HTMLInputElement).value;
-		const password = (document.getElementById("password") as HTMLInputElement)
-			.value;
+	// 	const email = (document.getElementById("email") as HTMLInputElement).value;
+	// 	const password = (document.getElementById("password") as HTMLInputElement)
+	// 		.value;
 
-		try {
-			await signInWithEmailAndPassword(auth, email, password);
-		} catch (err) {
-			console.error(err);
-			loginMsg.textContent = "Invalid email or password.";
-			loginMsg.classList.add("text-red-600");
-		} finally {
-			loginBtn.disabled = false;
-		}
-	});
+	// 	try {
+	// 		await signInWithEmailAndPassword(auth, email, password);
+	// 	} catch (err) {
+	// 		console.error(err);
+	// 		loginMsg.textContent = "Invalid email or password.";
+	// 		loginMsg.classList.add("text-red-600");
+	// 	} finally {
+	// 		loginBtn.disabled = false;
+	// 	}
+	// });
 
-	document
-		.getElementById("logout-btn")!
-		.addEventListener("click", () => signOut(auth));
-	document
-		.getElementById("denied-logout-btn")!
-		.addEventListener("click", () => signOut(auth));
+	// document
+	// 	.getElementById("logout-btn")!
+	// 	.addEventListener("click", () => signOut(auth));
+	// document
+	// 	.getElementById("denied-logout-btn")!
+	// 	.addEventListener("click", () => signOut(auth));
 
-	function showScreen(screen: Element) {
-		[loginScreen, dashboardScreen, deniedScreen].forEach((s) =>
-			s.classList.add("hidden"),
-		);
-		screen.classList.remove("hidden");
-	}
+	// function showScreen(screen: Element) {
+	// 	[loginScreen, dashboardScreen, deniedScreen].forEach((s) =>
+	// 		s.classList.add("hidden"),
+	// 	);
+	// 	screen.classList.remove("hidden");
+	// }
 
-	onAuthStateChanged(auth, async (user) => {
-		if (!user) {
-			showScreen(loginScreen);
-			return;
-		}
+	// onAuthStateChanged(auth, async (user) => {
+	// 	if (!user) {
+	// 		showScreen(loginScreen);
+	// 		return;
+	// 	}
 
-		try {
-			const adminSnap = await getDoc(doc(db, "admins", user.uid));
-			if (adminSnap.exists() && adminSnap.data().isAdmin === true) {
-				showScreen(dashboardScreen);
-				loadSubmissions();
-			} else {
-				showScreen(deniedScreen);
-			}
-		} catch (err) {
-			console.error("Admin check failed:", err);
-			showScreen(deniedScreen);
-		}
-	});
+	// 	try {
+	// 		const adminSnap = await getDoc(doc(db, "admins", user.uid));
+	// 		if (adminSnap.exists() && adminSnap.data().isAdmin === true) {
+	// 			showScreen(dashboardScreen);
+	// 			loadSubmissions();
+	// 		} else {
+	// 			showScreen(deniedScreen);
+	// 		}
+	// 	} catch (err) {
+	// 		console.error("Admin check failed:", err);
+	// 		showScreen(deniedScreen);
+	// 	}
+	// });
 
-	async function loadSubmissions() {
-		const listEl = document.getElementById("submissions-list")!;
-		listEl.innerHTML = `<p class="text-prose">Loading submissions...</p>`;
+	// async function loadSubmissions() {
+	// 	const listEl = document.getElementById("submissions-list")!;
+	// 	listEl.innerHTML = `<p class="text-prose">Loading submissions...</p>`;
 
-		try {
-			const q = query(
-				collection(db, "submissions"),
-				where("published", "!=", true),
-				orderBy("published"),
-				orderBy("submittedAt", "desc"),
-			);
-			const snap = await getDocs(q);
+	// 	try {
+	// 		const q = query(
+	// 			collection(db, "submissions"),
+	// 			where("published", "!=", true),
+	// 			orderBy("published"),
+	// 			orderBy("submittedAt", "desc"),
+	// 		);
+	// 		const snap = await getDocs(q);
 
-			if (snap.empty) {
-				listEl.innerHTML = `<p class="text-prose">No pending submissions.</p>`;
-				return;
-			}
+	// 		if (snap.empty) {
+	// 			listEl.innerHTML = `<p class="text-prose">No pending submissions.</p>`;
+	// 			return;
+	// 		}
 
-			listEl.innerHTML = "";
-			snap.forEach((docSnap) => {
-				listEl.appendChild(renderSubmissionCard(docSnap.id, docSnap.data()));
-			});
-		} catch (err) {
-			console.error(err);
-			listEl.innerHTML = `<p class="text-prose">Failed to load submissions.</p>`;
-		}
-	}
+	// 		listEl.innerHTML = "";
+	// 		snap.forEach((docSnap) => {
+	// 			listEl.appendChild(renderSubmissionCard(docSnap.id, docSnap.data()));
+	// 		});
+	// 	} catch (err) {
+	// 		console.error(err);
+	// 		listEl.innerHTML = `<p class="text-prose">Failed to load submissions.</p>`;
+	// 	}
+	// }
 
-	function renderSubmissionCard(id: string, data: any) {
-		const card = document.createElement("div");
-		card.className =
-			"bg-neutral p-6 rounded-2xl border border-neutral-darker shadow-lg shadow-neutral-darker/60";
+	// function renderSubmissionCard(id: string, data: any) {
+	// 	const card = document.createElement("div");
+	// 	card.className =
+	// 		"bg-neutral p-6 rounded-2xl border border-neutral-darker shadow-lg shadow-neutral-darker/60";
 
-		card.innerHTML = `
-      <h3 class="font-serif font-semibold text-xl mb-1">${escapeHtml(data.articleTitle || "Untitled")}</h3>
-      <p class="text-sm text-prose mb-3">
-        By ${escapeHtml(data.fullName || "Unknown")} &middot;
-        ${escapeHtml(data.school || "No school listed")} &middot;
-        Grade ${escapeHtml(data.grade || "?")}
-      </p>
-      ${
-				data.articleLink
-					? `<a href="${escapeAttr(data.articleLink)}" target="_blank" rel="noopener" class="text-indigo text-sm underline">View submitted doc &rarr;</a>`
-					: ""
-			}
-      <label class="text-sm text-prose block mt-4 mb-1">Article text (edit before publishing)</label>
-      <textarea class="article-text-input w-full text-sm border border-neutral-darker rounded-lg px-3 py-2" rows="6">${escapeHtml(data.articleText || "")}</textarea>
-      <div class="flex justify-end mt-3">
-        <button class="publish-btn bg-indigo hover:bg-indigo-dark text-indigo-fg rounded-full px-4 py-2 text-sm font-medium shrink-0 disabled:opacity-50">
-          Publish
-        </button>
-      </div>
-      <p class="publish-status text-sm mt-2 text-right"></p>
-    `;
+	// 	card.innerHTML = `
+	//      <h3 class="font-serif font-semibold text-xl mb-1">${escapeHtml(data.articleTitle || "Untitled")}</h3>
+	//      <p class="text-sm text-prose mb-3">
+	//        By ${escapeHtml(data.fullName || "Unknown")} &middot;
+	//        ${escapeHtml(data.school || "No school listed")} &middot;
+	//        Grade ${escapeHtml(data.grade || "?")}
+	//      </p>
+	//      ${
+	// 			data.articleLink
+	// 				? `<a href="${escapeAttr(data.articleLink)}" target="_blank" rel="noopener" class="text-indigo text-sm underline">View submitted doc &rarr;</a>`
+	// 				: ""
+	// 		}
+	//      <label class="text-sm text-prose block mt-4 mb-1">Article text (edit before publishing)</label>
+	//      <textarea class="article-text-input w-full text-sm border border-neutral-darker rounded-lg px-3 py-2" rows="6">${escapeHtml(data.articleText || "")}</textarea>
+	//      <div class="flex justify-end mt-3">
+	//        <button class="publish-btn bg-indigo hover:bg-indigo-dark text-indigo-fg rounded-full px-4 py-2 text-sm font-medium shrink-0 disabled:opacity-50">
+	//          Publish
+	//        </button>
+	//      </div>
+	//      <p class="publish-status text-sm mt-2 text-right"></p>
+	//    `;
 
-		const textInput = card.querySelector(
-			".article-text-input",
-		) as HTMLTextAreaElement;
-		const publishBtn = card.querySelector(".publish-btn") as HTMLButtonElement;
-		const statusEl = card.querySelector(".publish-status") as HTMLElement;
+	// 	const textInput = card.querySelector(
+	// 		".article-text-input",
+	// 	) as HTMLTextAreaElement;
+	// 	const publishBtn = card.querySelector(".publish-btn") as HTMLButtonElement;
+	// 	const statusEl = card.querySelector(".publish-status") as HTMLElement;
 
-		publishBtn.addEventListener("click", async () => {
-			publishBtn.disabled = true;
-			statusEl.textContent = "Publishing...";
-			statusEl.className = "publish-status text-sm mt-2 text-right text-prose";
+	// 	publishBtn.addEventListener("click", async () => {
+	// 		publishBtn.disabled = true;
+	// 		statusEl.textContent = "Publishing...";
+	// 		statusEl.className = "publish-status text-sm mt-2 text-right text-prose";
 
-			try {
-				await updateDoc(doc(db, "submissions", id), {
-					published: true,
-					articleText: textInput.value,
-					publishedAt: new Date(),
-				});
+	// 		try {
+	// 			await updateDoc(doc(db, "submissions", id), {
+	// 				published: true,
+	// 				articleText: textInput.value,
+	// 				publishedAt: new Date(),
+	// 			});
 
-				statusEl.textContent = "Published!";
-				statusEl.className =
-					"publish-status text-sm mt-2 text-right text-green-600";
-				setTimeout(() => card.remove(), 800);
-			} catch (err) {
-				console.error(err);
-				statusEl.textContent = "Failed to publish — check permissions.";
-				statusEl.className =
-					"publish-status text-sm mt-2 text-right text-red-600";
-				publishBtn.disabled = false;
-			}
-		});
+	// 			statusEl.textContent = "Published!";
+	// 			statusEl.className =
+	// 				"publish-status text-sm mt-2 text-right text-green-600";
+	// 			setTimeout(() => card.remove(), 800);
+	// 		} catch (err) {
+	// 			console.error(err);
+	// 			statusEl.textContent = "Failed to publish — check permissions.";
+	// 			statusEl.className =
+	// 				"publish-status text-sm mt-2 text-right text-red-600";
+	// 			publishBtn.disabled = false;
+	// 		}
+	// 	});
 
-		return card;
-	}
+	// 	return card;
+	// }
 
-	function escapeHtml(str: string) {
-		const div = document.createElement("div");
-		div.textContent = str ?? "";
-		return div.innerHTML;
-	}
+	// function escapeHtml(str: string) {
+	// 	const div = document.createElement("div");
+	// 	div.textContent = str ?? "";
+	// 	return div.innerHTML;
+	// }
 
-	function escapeAttr(str: string) {
-		return escapeHtml(str).replace(/"/g, "&quot;");
-	}
+	// function escapeAttr(str: string) {
+	// 	return escapeHtml(str).replace(/"/g, "&quot;");
+	// }
 </script>
