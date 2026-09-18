@@ -1,0 +1,35 @@
+---
+import Layout from "@/components/Layout.astro";
+
+const executiveTeam = [
+  { name: "Benjarmin Xu", role: "FOUNDER, EDITOR-IN-CHIEF", location: "Vietnam · Saigon South International School", initials: "BX", bio: "Full bio text..." },
+  { name: "Estelle Lee", role: "GLOBAL EXECUTIVE DIRECTOR", location: "Vietnam · Saigon South International School", initials: "EL", bio: "Full bio text..." },
+  { name: "Ryuta Isaka", role: "NATIONAL EDITOR-IN-CHIEF | JAPAN", location: "Japan · United World College ISAK", initials: "RI", bio: "Full bio text..." },
+  { name: "Graham Richardson", role: "NATIONAL EDITOR-IN-CHIEF | U.S.A", location: "United States · Ridgewood Highschool", initials: "GR", bio: "Full bio text..." },
+  { name: "Minjae Kwon", role: "NATIONAL EDITOR-IN-CHIEF | KOREA", location: "Korea · Cheongna Dalton School", initials: "MK", bio: "Full bio text..." }
+];
+---
+<!-- Yo Im not good at CSS so I did go to the darkside (Claude) for this -->
+<Layout pageTitle="Meet the Team">
+  <section class="max-w-6xl 2xl:max-w-7xl mx-auto px-4 py-12">
+    <h1 class="text-4xl 2xl:text-5xl font-bold mb-8">Executive Team</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 2xl:gap-6">
+      {executiveTeam.map((member) => (
+        <div class="bg-white p-6 2xl:p-8 rounded-2xl border border-gray-200 shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="w-12 h-12 2xl:w-16 2xl:h-16 bg-indigo-100 text-indigo-600 font-bold 2xl:text-xl rounded-full flex items-center justify-center mb-4">
+              {member.initials}
+            </div>
+            <h3 class="font-bold text-lg 2xl:text-xl">{member.name}</h3>
+            <p class="text-xs 2xl:text-sm text-indigo-600 font-semibold mt-1 mb-2">{member.role}</p>
+            <p class="text-xs 2xl:text-sm text-gray-500">{member.location}</p>
+          </div>
+          <button class="bio-btn text-xs 2xl:text-sm font-semibold mt-4 text-left hover:underline" data-bio={member.bio}>
+            Read bio
+          </button>
+        </div>
+      ))}
+    </div>
+  </section>
+</Layout>
