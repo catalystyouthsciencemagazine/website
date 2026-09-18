@@ -8,66 +8,68 @@ import CaptionedHeader from "@/components/CaptionedHeader.astro";
 ---
 
 <Layout>
-	<Section
-		sectionClass="bg-radial from-indigo-darkest to-indigo-darker text-indigo-fg"
-		containerClass="items-center justify-center text-center"
-	>
-		<div class="flex gap-2">
-			<Pill>International</Pill>
-			<Pill>Youth-Led</Pill>
-			<Pill>Peer-Reviewed</Pill>
-		</div>
-		<h1 class="font-serif font-bold text-9xl mb-4">
-			Cata<i class="font-semibold">lyst</i>
-		</h1>
-		<p class="text-indigo-fg/50">
-			A global magazine for youth science journalism.<br />
-			Made by and for students abroad.
-		</p>
-	</Section>
+    <Section
+        sectionClass="bg-radial from-indigo-darkest to-indigo-darker text-indigo-fg"
+        containerClass="items-center justify-center text-center px-4"
+    >
+        <!-- Added flex-wrap and justify-center so pills wrap nicely on small screens -->
+        <div class="flex flex-wrap justify-center gap-2 mb-4">
+            <Pill>International</Pill>
+            <Pill>Youth-Led</Pill>
+            <Pill>Peer-Reviewed</Pill>
+        </div>
 
-	<Section sectionClass="bg-neutral-dark">
-		<Eyebrow>Why Catalyst</Eyebrow>
-		<CaptionedHeader>
-			<span slot="header">
-				Science communication,<br />
-				written by people<br />
-				who'll shape it's future
-			</span>
-			<span slot="body">
-				Catalyst exists to make rigorous scientific writing accessible
-				to students everywhere, and to prove that "student publication"
-				doesn’t mean amateur.
-			</span>
-		</CaptionedHeader>
-		<div class="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-			<IconCard icon="ph:dna" header="Research">
-				We publish original research from student scientists, reviewed
-				with the same rigor as any academic journal.
-			</IconCard>
-			<IconCard icon="ph:chat-centered" header="Journalism">
-				Our reporters cover breaking discoveries and translate dense
-				papers into stories anyone can follow.
-			</IconCard>
-			<IconCard icon="ph:graduation-cap" header="Education">
-				Long-form explainers that make complex science click, without
-				dumbing it down for a younger audience.
-			</IconCard>
-			<IconCard icon="ph:globe" header="Global Community">
-				Editors and writers across 10+ countries collaborate across time
-				zones, languages, and disciplines.
-			</IconCard>
-		</div>
-	</Section>
+        <!-- Scaled font size: text-5xl on mobile, scaling up to text-9xl on desktop -->
+        <h1 class="font-serif font-bold text-5xl sm:text-7xl lg:text-9xl mb-4 tracking-tight">
+            Cata<i class="font-semibold">lyst</i>
+        </h1>
 
-	<Section sectionClass="bg-neutral-darker">
-		<Eyebrow>Latest Issue</Eyebrow>
-		<CaptionedHeader>
-			<span slot="header"> Featured Articles </span>
-			<span slot="body">
-				Selected from this month’s issue: research, reporting, and
-				analysis from our global contributor network.
-			</span>
-		</CaptionedHeader>
-	</Section>
+        <p class="text-indigo-fg/50 text-sm sm:text-base max-w-md mx-auto">
+            A global magazine for youth science journalism. Made by and for students abroad.
+        </p>
+    </Section>
+
+    <Section sectionClass="bg-neutral-dark">
+        <Eyebrow>Why Catalyst</Eyebrow>
+        <CaptionedHeader>
+            <!-- Removed rigid <br /> tags and added responsive text sizing -->
+            <span slot="header" class="text-2xl sm:text-4xl block">
+                Science communication, written by people who'll shape its future
+            </span>
+            <span slot="body">
+                Catalyst exists to make rigorous scientific writing accessible
+                to students everywhere, and to prove that "student publication"
+                doesn’t mean amateur.
+            </span>
+        </CaptionedHeader>
+        <div class="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+            <IconCard icon="ph:dna" header="Research">
+                We publish original research from student scientists, reviewed
+                with the same rigor as any academic journal.
+            </IconCard>
+            <IconCard icon="ph:chat-centered" header="Journalism">
+                Our reporters cover breaking discoveries and translate dense
+                papers into stories anyone can follow.
+            </IconCard>
+            <IconCard icon="ph:graduation-cap" header="Education">
+                Long-form explainers that make complex science click, without
+                dumbing it down for a younger audience.
+            </IconCard>
+            <IconCard icon="ph:globe" header="Global Community">
+                Editors and writers across 10+ countries collaborate across time
+                zones, languages, and disciplines.
+            </IconCard>
+        </div>
+    </Section>
+
+    <Section sectionClass="bg-neutral-darker">
+        <Eyebrow>Latest Issue</Eyebrow>
+        <CaptionedHeader>
+            <span slot="header"> Featured Articles </span>
+            <span slot="body">
+                Selected from this month’s issue: research, reporting, and
+                analysis from our global contributor network.
+            </span>
+        </CaptionedHeader>
+    </Section>
 </Layout>
