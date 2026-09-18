@@ -100,179 +100,149 @@ import Eyebrow from "@/components/Eyebrow.astro";
 	</section>
 </Layout>
 
-<!-- yo shit is breaking ci sorry -brooke -->
 <script>
-	// import { signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
-	// import {
-	// 	collection,
-	// 	query,
-	// 	where,
-	// 	orderBy,
-	// 	getDocs,
-	// 	doc,
-	// 	getDoc,
-	// 	updateDoc,
-	// } from "firebase/firestore";
-	// import { auth, db } from "@/lib/firebase";
+	import { signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
+	import { collection, query, orderBy, getDocs, doc, getDoc, updateDoc } from "firebase/firestore";
+	import { auth, db } from "../lib/firebase";
 
-	// const loginScreen = document.getElementById("login-screen")!;
-	// const deniedScreen = document.getElementById("denied-screen")!;
-	// const dashboardScreen = document.getElementById("dashboard-screen")!;
+	const loginScreen = document.getElementById("login-screen")!;
+	const deniedScreen = document.getElementById("denied-screen")!;
+	const dashboardScreen = document.getElementById("dashboard-screen")!;
+	const loginForm = document.getElementById("login-form") as HTMLFormElement;
+	const loginBtn = document.getElementById("login-btn") as HTMLButtonElement;
+	const loginMsg = document.getElementById("login-msg")!;
 
-	// const loginForm = document.getElementById("login-form") as HTMLFormElement;
-	// const loginBtn = document.getElementById("login-btn") as HTMLButtonElement;
-	// const loginMsg = document.getElementById("login-msg")!;
+	function showScreen(screen: Element) {
+		for (const s of [loginScreen, dashboardScreen, deniedScreen]) s.classList.add("hidden");
+		screen.classList.remove("hidden");
+	}
 
-	// loginForm.addEventListener("submit", async (e) => {
-	// 	e.preventDefault();
-	// 	loginMsg.textContent = "";
-	// 	loginBtn.disabled = true;
+	loginForm.addEventListener("submit", async (e) => {
+		e.preventDefault();
+		loginMsg.textContent = "";
+		loginBtn.disabled = true;
 
-	// 	const email = (document.getElementById("email") as HTMLInputElement).value;
-	// 	const password = (document.getElementById("password") as HTMLInputElement)
-	// 		.value;
+		const email = (document.getElementById("email") as HTMLInputElement).value;
+		const password = (document.getElementById("password") as HTMLInputElement).value;
 
-	// 	try {
-	// 		await signInWithEmailAndPassword(auth, email, password);
-	// 	} catch (err) {
-	// 		console.error(err);
-	// 		loginMsg.textContent = "Invalid email or password.";
-	// 		loginMsg.classList.add("text-red-600");
-	// 	} finally {
-	// 		loginBtn.disabled = false;
-	// 	}
-	// });
+		try {
+			await signInWithEmailAndPassword(auth, email, password);
+		} catch (err) {
+			console.error(err);
+			loginMsg.textContent = "Invalid email or password.";
+			loginMsg.classList.add("text-red-600");
+		}
+		loginBtn.disabled = false;
+	});
 
-	// document
-	// 	.getElementById("logout-btn")!
-	// 	.addEventListener("click", () => signOut(auth));
-	// document
-	// 	.getElementById("denied-logout-btn")!
-	// 	.addEventListener("click", () => signOut(auth));
+	document.getElementById("logout-btn")!.addEventListener("click", () => signOut(auth));
+	document.getElementById("denied-logout-btn")!.addEventListener("click", () => signOut(auth));
 
-	// function showScreen(screen: Element) {
-	// 	[loginScreen, dashboardScreen, deniedScreen].forEach((s) =>
-	// 		s.classList.add("hidden"),
-	// 	);
-	// 	screen.classList.remove("hidden");
-	// }
+	onAuthStateChanged(auth, async (user) => {
+		if (!user) return showScreen(loginScreen);
 
-	// onAuthStateChanged(auth, async (user) => {
-	// 	if (!user) {
-	// 		showScreen(loginScreen);
-	// 		return;
-	// 	}
+		try {
+			const adminSnap = await getDoc(doc(db, "admins", user.uid));
+			if (adminSnap.exists() && adminSnap.data().isAdmin === true) {
+				showScreen(dashboardScreen);
+				loadSubmissions();
+			} else {
+				showScreen(deniedScreen);
+			}
+		} catch (err) {
+			console.error(err);
+			showScreen(deniedScreen);
+		}
+	});
 
-	// 	try {
-	// 		const adminSnap = await getDoc(doc(db, "admins", user.uid));
-	// 		if (adminSnap.exists() && adminSnap.data().isAdmin === true) {
-	// 			showScreen(dashboardScreen);
-	// 			loadSubmissions();
-	// 		} else {
-	// 			showScreen(deniedScreen);
-	// 		}
-	// 	} catch (err) {
-	// 		console.error("Admin check failed:", err);
-	// 		showScreen(deniedScreen);
-	// 	}
-	// });
+	async function loadSubmissions() {
+		const listEl = document.getElementById("submissions-list")!;
+		listEl.innerHTML = `<p class="text-prose">Loading submissions...</p>`;
 
-	// async function loadSubmissions() {
-	// 	const listEl = document.getElementById("submissions-list")!;
-	// 	listEl.innerHTML = `<p class="text-prose">Loading submissions...</p>`;
+		try {
+			const snap = await getDocs(query(collection(db, "submissions"), orderBy("submittedAt", "desc")));
+			const pending = snap.docs.filter((d) => d.data().published !== true);
 
-	// 	try {
-	// 		const q = query(
-	// 			collection(db, "submissions"),
-	// 			where("published", "!=", true),
-	// 			orderBy("published"),
-	// 			orderBy("submittedAt", "desc"),
-	// 		);
-	// 		const snap = await getDocs(q);
+			if (!pending.length) {
+				listEl.innerHTML = `<p class="text-prose">No pending submissions.</p>`;
+				return;
+			}
 
-	// 		if (snap.empty) {
-	// 			listEl.innerHTML = `<p class="text-prose">No pending submissions.</p>`;
-	// 			return;
-	// 		}
+			listEl.innerHTML = "";
+			for (const d of pending) listEl.appendChild(renderSubmissionCard(d.id, d.data()));
+		} catch (err) {
+			console.error(err);
+			listEl.innerHTML = `<p class="text-prose">Failed to load submissions.</p>`;
+		}
+	}
 
-	// 		listEl.innerHTML = "";
-	// 		snap.forEach((docSnap) => {
-	// 			listEl.appendChild(renderSubmissionCard(docSnap.id, docSnap.data()));
-	// 		});
-	// 	} catch (err) {
-	// 		console.error(err);
-	// 		listEl.innerHTML = `<p class="text-prose">Failed to load submissions.</p>`;
-	// 	}
-	// }
+	function renderSubmissionCard(id: string, data: any) {
+		const card = document.createElement("div");
+		card.className = "bg-neutral p-6 rounded-2xl border border-neutral-darker shadow-lg shadow-neutral-darker/60";
+		// Note to self: check if this works by setting articleLink in firebase to malicious shizzle
+		const safeLink = (data.articleLink && isValidUrl(data.articleLink))
+    ? `<a href="${esc(data.articleLink)}" target="_blank" rel="noopener" class="text-indigo text-sm underline">View submitted doc &rarr;</a>`
+    : "";
+		card.innerHTML = `
+      <h3 class="font-serif font-semibold text-xl mb-1">${esc(data.articleTitle || "Untitled")}</h3>
+      <p class="text-sm text-prose mb-3">
+        By ${esc(data.fullName || "Unknown")} &middot;
+        ${esc(data.school || "No school listed")} &middot;
+        Grade ${esc(data.grade || "?")}
+      </p>
+      ${data.articleLink ? `<a href="${esc(data.articleLink)}" target="_blank" rel="noopener" class="text-indigo text-sm underline">View submitted doc &rarr;</a>` : ""}
+      <label class="text-sm text-prose block mt-4 mb-1">Article text (edit before publishing)</label>
+      <textarea class="article-text-input w-full text-sm border border-neutral-darker rounded-lg px-3 py-2" rows="6">${esc(data.articleText || "")}</textarea>
+      <div class="flex justify-end mt-3">
+        <button class="publish-btn bg-indigo hover:bg-indigo-dark text-indigo-fg rounded-full px-4 py-2 text-sm font-medium shrink-0 disabled:opacity-50">Publish</button>
+      </div>
+      <p class="publish-status text-sm mt-2 text-right"></p>
+    `;
 
-	// function renderSubmissionCard(id: string, data: any) {
-	// 	const card = document.createElement("div");
-	// 	card.className =
-	// 		"bg-neutral p-6 rounded-2xl border border-neutral-darker shadow-lg shadow-neutral-darker/60";
+		const textInput = card.querySelector(".article-text-input") as HTMLTextAreaElement;
+		const publishBtn = card.querySelector(".publish-btn") as HTMLButtonElement;
+		const statusEl = card.querySelector(".publish-status") as HTMLElement;
 
-	// 	card.innerHTML = `
-	//      <h3 class="font-serif font-semibold text-xl mb-1">${escapeHtml(data.articleTitle || "Untitled")}</h3>
-	//      <p class="text-sm text-prose mb-3">
-	//        By ${escapeHtml(data.fullName || "Unknown")} &middot;
-	//        ${escapeHtml(data.school || "No school listed")} &middot;
-	//        Grade ${escapeHtml(data.grade || "?")}
-	//      </p>
-	//      ${
-	// 			data.articleLink
-	// 				? `<a href="${escapeAttr(data.articleLink)}" target="_blank" rel="noopener" class="text-indigo text-sm underline">View submitted doc &rarr;</a>`
-	// 				: ""
-	// 		}
-	//      <label class="text-sm text-prose block mt-4 mb-1">Article text (edit before publishing)</label>
-	//      <textarea class="article-text-input w-full text-sm border border-neutral-darker rounded-lg px-3 py-2" rows="6">${escapeHtml(data.articleText || "")}</textarea>
-	//      <div class="flex justify-end mt-3">
-	//        <button class="publish-btn bg-indigo hover:bg-indigo-dark text-indigo-fg rounded-full px-4 py-2 text-sm font-medium shrink-0 disabled:opacity-50">
-	//          Publish
-	//        </button>
-	//      </div>
-	//      <p class="publish-status text-sm mt-2 text-right"></p>
-	//    `;
+		publishBtn.addEventListener("click", async () => {
+			publishBtn.disabled = true;
+			statusEl.textContent = "Publishing...";
+			statusEl.className = "publish-status text-sm mt-2 text-right text-prose";
 
-	// 	const textInput = card.querySelector(
-	// 		".article-text-input",
-	// 	) as HTMLTextAreaElement;
-	// 	const publishBtn = card.querySelector(".publish-btn") as HTMLButtonElement;
-	// 	const statusEl = card.querySelector(".publish-status") as HTMLElement;
+			try {
+				await updateDoc(doc(db, "submissions", id), {
+					published: true,
+					articleText: textInput.value,
+					publishedAt: new Date(),
+				});
+				statusEl.textContent = "Published!";
+				statusEl.className = "publish-status text-sm mt-2 text-right text-green-600";
+				setTimeout(() => card.remove(), 800);
+			} catch (err) {
+				console.error(err);
+				statusEl.textContent = "Failed to publish — check permissions.";
+				statusEl.className = "publish-status text-sm mt-2 text-right text-red-600";
+				publishBtn.disabled = false;
+			}
+		});
 
-	// 	publishBtn.addEventListener("click", async () => {
-	// 		publishBtn.disabled = true;
-	// 		statusEl.textContent = "Publishing...";
-	// 		statusEl.className = "publish-status text-sm mt-2 text-right text-prose";
+		return card;
+	}
 
-	// 		try {
-	// 			await updateDoc(doc(db, "submissions", id), {
-	// 				published: true,
-	// 				articleText: textInput.value,
-	// 				publishedAt: new Date(),
-	// 			});
+		// Note to self: check if this works by setting articleLink in firebase to malicious shizzle
 
-	// 			statusEl.textContent = "Published!";
-	// 			statusEl.className =
-	// 				"publish-status text-sm mt-2 text-right text-green-600";
-	// 			setTimeout(() => card.remove(), 800);
-	// 		} catch (err) {
-	// 			console.error(err);
-	// 			statusEl.textContent = "Failed to publish — check permissions.";
-	// 			statusEl.className =
-	// 				"publish-status text-sm mt-2 text-right text-red-600";
-	// 			publishBtn.disabled = false;
-	// 		}
-	// 	});
+	function isValidUrl(urlStr: string): boolean {
+        try {
+            const parsed = new URL(urlStr);
+            return parsed.protocol === "http:" || parsed.protocol === "https:";
+        } catch {
+            return false;
+        }
+    }
 
-	// 	return card;
-	// }
 
-	// function escapeHtml(str: string) {
-	// 	const div = document.createElement("div");
-	// 	div.textContent = str ?? "";
-	// 	return div.innerHTML;
-	// }
-
-	// function escapeAttr(str: string) {
-	// 	return escapeHtml(str).replace(/"/g, "&quot;");
-	// }
+	function esc(str: string) {
+		const div = document.createElement("div");
+		div.textContent = str ?? "";
+		return div.innerHTML;
+	}
 </script>
