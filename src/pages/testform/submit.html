@@ -715,45 +715,60 @@
 
     </div>
 
-    <script> import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+ <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
   const firebaseConfig = {
-     apiKey: "AIzaSyDqV8rhdlnx74m_XF311IaX_shNdS3Bntc",
-  authDomain: "forum-b2b70.firebaseapp.com",
-  projectId: "forum-b2b70",
-  storageBucket: "forum-b2b70.firebasestorage.app",
+    apiKey: "AIzaSyDqV8rhdlnx74m_XF311IaX_shNdS3Bntc",
+    authDomain: "forum-b2b70.firebaseapp.com",
+    projectId: "forum-b2b70",
+    storageBucket: "forum-b2b70.firebasestorage.app",
   };
 
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
-  const storage = getStorage(app);
 
-  document.getElementById('submissionForm').addEventListener('submit', async (e) => {
+  const form = document.getElementById('submissionForm');
+  const msgEl = document.getElementById('Msg');
+
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
     
-    const file = document.getElementById('articleFile').files[0];
-    const storageRef = ref(storage, 'articles/' + Date.now() + '_' + file.name);
+    const originSelect = document.getElementById('origin');
+    const selectedOrigins = Array.from(originSelect.selectedOptions).map(opt => opt.value);
+
+    const checkedTopics = Array.from(document.querySelectorAll('input[name="topics"]:checked')).map(cb => cb.value);
 
     try {
-      const snapshot = await uploadBytes(storageRef, file);
-      const fileUrl = await getDownloadURL(snapshot.ref);
-
       await addDoc(collection(db, "submissions"), {
-        authorName: document.getElementById('authorName').value,
-        authorEmail: document.getElementById('authorEmail').value,
-        title: document.getElementById('title').value,
-        abstract: document.getElementById('abstract').value,
-        fileUrl: fileUrl,
-        submittedAt: new Date()
+        fullName: document.getElementById('fullName').value,
+        preferredName: document.getElementById('preferred').value,
+        school: document.getElementById('school').value,
+        grade: document.getElementById('grade').value,
+        currentCountry: document.getElementById('currentCountry').value,
+        origins: selectedOrigins,
+        topics: checkedTopics,
+        howHeard: document.getElementById('howHeard').value,
+        articleTitle: document.getElementById('Title').value,
+        articleLink: document.getElementById('Link').value,
+        articleText: document.getElementById('article').value,
+        submittedAt: new Date(),
+        published: false
       });
 
-      alert("Article submitted successfully!");
+      msgEl.textContent = "Article submitted successfully!";
+      msgEl.className = "status-msg success";
+      msgEl.style.display = "block";
+      form.reset();
     } catch (error) {
       console.error("Error submitting form: ", error);
+      msgEl.textContent = "Failed to submit article. Please try again.";
+      msgEl.className = "status-msg error";
+      msgEl.style.display = "block";
     }
-  });</script>
+  });
+</script>
 
 </body>
 </html>
