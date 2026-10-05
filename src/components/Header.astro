@@ -4,10 +4,10 @@ import Logo from "@/assets/brand/logo.avif";
 import { Image } from "astro:assets";
 
 const NAV_LINKS = [
-	{ label: "About", path: "/about" },
-	{ label: "Team", path: "/website/team" },
-	{ label: "Articles", path: "website/articles" },
-	{ label: "Contact Us", path: "/contact-us" },
+	{ label: "About", path: "about" },
+	{ label: "Team", path: "team" },
+	{ label: "Articles", path: "articles" },
+	{ label: "Contact Us", path: "contact-us" },
 ];
 ---
 
@@ -23,7 +23,7 @@ const NAV_LINKS = [
 			{
 				NAV_LINKS.map(({ label, path }) => (
 					<a
-						href={path}
+						href={`${import.meta.env.BASE_URL}${path}`}
 						class="hover:scale-[102.5%] hover:text-shadow-sm transition-all font-normal"
 					>
 						{label}
@@ -32,7 +32,7 @@ const NAV_LINKS = [
 			}
 		</nav>
 
-		<LinkButton style="primary" href="/website/testform/submit">
+		<LinkButton style="primary" href={`${import.meta.env.BASE_URL}testform/submit`}>
 			Submit Your Work
 		</LinkButton>
 	</div>
