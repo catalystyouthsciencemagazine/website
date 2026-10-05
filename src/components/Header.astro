@@ -4,36 +4,36 @@ import Logo from "@/assets/brand/logo.avif";
 import { Image } from "astro:assets";
 
 const NAV_LINKS = [
-	{ label: "About", path: "about" },
-	{ label: "Team", path: "team" },
-	{ label: "Articles", path: "articles" },
-	{ label: "Contact Us", path: "contact-us" },
+    { label: "About", path: "/about" },
+    { label: "Team", path: "/website/team" },
+    { label: "Articles", path: "articles" },
+    { label: "Contact Us", path: "/contact-us" },
 ];
 ---
 
 <header class="sticky h-22 border-b-2 px-content-padding border-neutral-darker">
-	<div
-		class="max-w-content w-full h-full mx-auto flex items-center justify-center"
-	>
-		<a href={import.meta.env.BASE_URL} class="w-auto h-16 hover:scale-[101%] transition-transform">
-			<Image src={Logo} alt="Catalyst Magazine" class="w-auto h-full" />
-		</a>
+    <div
+        class="max-w-content w-full h-full mx-auto flex items-center justify-center"
+    >
+        <a href={import.meta.env.BASE_URL} class="w-auto h-16 hover:scale-[101%] transition-transform">
+            <Image src={Logo} alt="Catalyst Magazine" class="w-auto h-full" />
+        </a>
 
-		<nav class="flex gap-8 mx-auto">
-			{
-				NAV_LINKS.map(({ label, path }) => (
-					<a
-						href={`${import.meta.env.BASE_URL}${path}`}
-						class="hover:scale-[102.5%] hover:text-shadow-sm transition-all font-normal"
-					>
-						{label}
-					</a>
-				))
-			}
-		</nav>
+        <nav class="flex gap-8 mx-auto">
+            {
+                NAV_LINKS.map(({ label, path }) => (
+                    <a
+                        href={path}
+                        class="hover:scale-[102.5%] hover:text-shadow-sm transition-all font-normal"
+                    >
+                        {label}
+                    </a>
+                ))
+            }
+        </nav>
 
-		<LinkButton style="primary" href={`${import.meta.env.BASE_URL}testform/submit`}>
-			Submit Your Work
-		</LinkButton>
-	</div>
+        <LinkButton style="primary" href="/website/testform/submit">
+            Submit Your Work
+        </LinkButton>
+    </div>
 </header>
