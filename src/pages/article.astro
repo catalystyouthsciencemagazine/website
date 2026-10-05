@@ -1,1 +1,70 @@
+---
+import Layout from "@/components/Layout.astro";
+---
 
+<Layout pageTitle="Article | Catalyst">
+	<section class="max-w-3xl mx-auto px-4 py-12">
+		<a
+			href={`${import.meta.env.BASE_URL}articles`}
+			class="text-indigo-600 text-sm font-semibold hover:underline"
+		>
+			&larr; Back to articles
+		</a>
+
+		<div id="article-content" class="mt-8">
+			<p class="text-gray-500 text-center py-16">Loading article...</p>
+		</div>
+	</section>
+</Layout>
+
+<script>
+	import { doc, getDoc } from "firebase/firestore";
+	import { db } from "../lib/firebase";
+
+	const contentEl = document.getElementById("article-content")!;
+
+	function esc(str: string) {
+		const div = document.createElement("div");
+		div.textContent = str ?? "";
+		return div.innerHTML;
+	}
+
+	async function loadArticle() {
+		const params = new URLSearchParams(window.location.search);
+		const id = params.get("id");
+
+		if (!id) {
+			contentEl.innerHTML = `<p class="text-gray-500 text-center py-16">No article specified.</p>`;
+			return;
+		}
+
+		try {
+			const snap = await getDoc(doc(db, "submissions", id));
+
+			// Only show it if it's actually published — a raw doc ID alone
+			// shouldn't be enough to view an unpublished submission.
+			if (!snap.exists() || snap.data().published !== true) {
+				contentEl.innerHTML = `<p class="text-gray-500 text-center py-16">Article not found.</p>`;
+				return;
+			}
+
+			const data = snap.data();
+			const date = data.publishedAt?.toDate
+				? data.publishedAt.toDate().toLocaleDateString()
+				: "";
+
+			contentEl.innerHTML = `
+				<h1 class="text-3xl sm:text-5xl font-serif font-bold text-gray-900 mb-4">${esc(data.articleTitle || "Untitled")}</h1>
+				<p class="text-sm text-gray-500 mb-8">
+					By <strong class="text-gray-700">${esc(data.fullName || "Unknown")}</strong>${date ? ` &middot; ${date}` : ""}
+				</p>
+				<div class="text-gray-700 leading-relaxed whitespace-pre-line">${esc(data.articleText || "")}</div>
+			`;
+		} catch (err) {
+			console.error(err);
+			contentEl.innerHTML = `<p class="text-gray-500 text-center py-16">Failed to load article.</p>`;
+		}
+	}
+
+	loadArticle();
+</script>
