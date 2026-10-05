@@ -35,10 +35,8 @@ import Layout from "@/components/Layout.astro";
 
 	async function loadArticles() {
 		try {
-			const snap = await getDocs(
-  query(collection(db, "submissions"), where("published", "==", true), orderBy("publishedAt", "desc")),
-);
-const published = snap.docs;
+			const snap = await getDocs(query(collection(db, "submissions"), orderBy("publishedAt", "desc")));
+			const published = snap.docs.filter((d) => d.data().published === true);
 
 			if (!published.length) {
 				grid.innerHTML = `<div class="text-center py-16 bg-gray-50 rounded-2xl border border-dashed border-gray-300 col-span-full">
